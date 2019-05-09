@@ -1,5 +1,5 @@
 {
-    "name": "pmc/microservice",
+    "name": "openpmc/microservice",
     "description": "the new thinkphp + microserverice",
     "type": "project",
     "keywords": [
