@@ -1,0 +1,11 @@
+<?php
+
+use think\migration\Migrator;
+
+class {%tableName%} extends Migrator
+{
+    public function change()
+    {
+        {%Content%}
+    }
+}

@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  php:
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/php:7.3-fpm-alpine-redis-composer-git-swoole
+    networks:
+      - pmc-network
+    restart: always
+    volumes:
+      - ./application/:/web/application/
+      - ./extend/:/web/extend/
+      - ./config/:/web/config/
+      - ./public/:/web/public/
+      - ./runtime/:/web/runtime/
+      - ./route/:/web/route/
+      - ./thinkphp/:/web/thinkphp/
+      - ./vendor/:/web/vendor/
+      - ./build.php:/web/build.php
+      - ./database/:/web/database
+      - ./think:/web/think
+      - ./composer.json:/web/composer.json
+      - ./php/:/usr/local/etc/php/
+      #      这个地方必须单独映射，因为SESSION本地会被忽略。加/强制映射为文件夹,如果不加session_path，SESSION将会失效
+      - ./php/session_path/:/usr/local/etc/php/session_path
+    environment:
+      - TZ=Asia/Shanghai
+      - APP_ENV=local
+      - APP_DEBUG=true
+      #   MYSQL 设置
+      - MYSQL_HOST=ytlj.com
+      - MYSQL_DB=pmc
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=cgland2019
+      - MYSQL_PORT=3308
+      #    REDIS 设置
+      - REDIS_CACHE_HOST=ytlj.com
+      - REDIS_CACHE_PORT=6666
+      - REDIS_CACHE_PASSWORD=cgland2019
+      - REDIS_CACHE_DB=0
+
+  nginx:
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/nginx:1.13
+    networks:
+      - pmc-network
+    ports:
+      #   微服务暴露端口
+      - 8083:8081
+    restart: always
+    depends_on:
+      - php
+    volumes:
+      - ./application/:/web/application/
+      - ./extend/:/web/extend/
+      - ./config/:/web/config/
+      - ./public/:/web/public/
+      - ./route/:/web/route/
+      - ./runtime/:/web/runtime/
+      - ./thinkphp/:/web/thinkphp/
+      - ./vendor/:/web/vendor/
+      - ./build.php:/web/build.php
+      - ./think:/web/think
+      - ./nginx/:/etc/nginx/
+volumes:
+  mysql-db:
+    driver: local
+networks:
+  pmc-network:

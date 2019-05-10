@@ -13,9 +13,8 @@
 // | 控制台配置
 // +----------------------------------------------------------------------
 return [
-    // 执行用户（Windows下无效）
-    'user'     => null,
-    // 指令定义
-    'commands' => [
-    ],
+    'name'      => 'Think Console',
+    'version'   => '0.1',
+    'user'      => null,
+    'auto_path' => env('app_path') . 'command' . DIRECTORY_SEPARATOR,
 ];

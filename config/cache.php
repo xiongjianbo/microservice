@@ -14,12 +14,25 @@
 // +----------------------------------------------------------------------
 
 return [
-    // 驱动方式
-    'type'   => 'File',
-    // 缓存保存目录
-    'path'   => '',
-    // 缓存前缀
-    'prefix' => '',
-    // 缓存有效期 0表示永久缓存
-    'expire' => 0,
+    'type' => 'complex',
+    'default' => [
+        'type' => 'redis',
+        'host' => env('REDIS_CACHE_HOST'),
+        'port' => env('REDIS_CACHE_PORT'),
+        'password' => env('REDIS_CACHE_PASSWORD'),
+        'select' => env('REDIS_CACHE_DB'),
+        'timeout' => 3600,
+        // 全局缓存有效期（0为永久有效）
+        'expire' => 3600,
+        // 缓存前缀
+        'prefix' => '',
+    ],
+    'file' => [
+        'type' => 'file',
+        'path' => '../runtime/cache/',
+        // 缓存前缀
+        'prefix' => '',
+        // 缓存有效期 0表示永久缓存
+        'expire' => 0,
+    ],
 ];

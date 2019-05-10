@@ -1,6 +1,5 @@
-/.idea
-/.vscode
-/vendor
-*.log
+.idea
+/mysql/data/
+/thinkphp
 thinkphp
 .env

@@ -1,24 +1,23 @@
 {
-    "name": "openpmc/microservice",
-    "description": "the new thinkphp + microserverice",
+    "name": "openpmc/microserver",
+    "description": "the new microserver framework",
     "type": "project",
     "keywords": [
         "framework",
         "thinkphp",
         "ORM"
     ],
-    "homepage": "http://thinkphp.cn/",
+    "homepage": "http://cgland.top/",
     "license": "Apache-2.0",
     "authors": [
         {
             "name": "xiongjianbo",
-            "email": "10044375@qq.com"
+            "email": "i@89ge.cn"
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "topthink/framework": "6.0.*-dev",
-
+        "php": ">=7.0.0",
+        "topthink/framework": "5.1.35",
         "phpoffice/phpspreadsheet": "^1.6",
         "topthink/think-captcha": "^2.0",
         "topthink/think-image": "^1.0",
@@ -34,24 +33,19 @@
         "cgland/thinkphp-qrcode": "^1.0",
         "ruflin/elastica": "^6.1",
         "ext-json": "*"
-
-
     },
     "autoload": {
         "psr-4": {
-            "app\\": "app"
-        },
-        "psr-0": {
-            "": "extend/"
+            "app\\": "application"
         }
+    },
+    "extra": {
+        "think-path": "thinkphp"
     },
     "config": {
         "preferred-install": "dist"
     },
-    "scripts": {
-        "post-autoload-dump": [
-            "@php think service:discover",
-            "@php think vendor:publish"
-        ]
+    "require-dev": {
+        "fzaninotto/faker": "^1.8"
     }
 }

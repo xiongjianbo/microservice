@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+  php:
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/php:7.3-fpm-alpine-redis-composer-git-swoole
+    networks:
+    - pmc-network
+    restart: always
+    depends_on:
+      - mysql
+    volumes:
+      - ./application/:/web/application/
+      - ./extend/:/web/extend/
+      - ./config/:/web/config/
+      - ./public/:/web/public/
+      - ./runtime/:/web/runtime/
+      - ./route/:/web/route/
+      - ./thinkphp/:/web/thinkphp/
+      - ./vendor/:/web/vendor/
+      - ./build.php:/web/build.php
+      - ./database/:/web/database
+      - ./think:/web/think
+      - ./composer.json:/web/composer.json
+      - ./php/:/usr/local/etc/php/
+#      这个地方必须单独映射，因为SESSION本地会被忽略。加/强制映射为文件夹,如果不加session_path，SESSION将会失效
+      - ./php/session_path/:/usr/local/etc/php/session_path
+    environment:
+    - TZ=Asia/Shanghai
+    - APP_ENV=local
+    - APP_DEBUG=true
+#   阿里云短信
+    - REGION_ID=cn-hangzhou
+    - SIGN_NAME=七课堂
+    - ACCESS_KEY_ID=LTAIxe986Yw6tz0G
+    - ACCESS_KEY_SECRET=yQGrtbHsdOUkUiSktKrWAKRe8vdw8h
+#   MYSQL 设置
+    - MYSQL_HOST=mysql
+    - MYSQL_DB=pmc
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=cgland2019
+    - MYSQL_PORT=3306
+#   REDIS 设置
+    - REDIS_CACHE_HOST=redis
+    - REDIS_CACHE_PORT=6379
+    - REDIS_CACHE_PASSWORD=cgland2019
+    - REDIS_CACHE_DB=0
+
+  nginx:
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/nginx:1.13
+    networks:
+    - pmc-network
+    ports:
+#   静态代理端口
+    - 8082:80
+#   API端口
+    - 8081:8081
+    restart: always
+    depends_on:
+      - php
+    volumes:
+      - ./application/:/web/application/
+      - ./extend/:/web/extend/
+      - ./config/:/web/config/
+      - ./public/:/web/public/
+      - ./route/:/web/route/
+      - ./runtime/:/web/runtime/
+      - ./thinkphp/:/web/thinkphp/
+      - ./vendor/:/web/vendor/
+      - ./build.php:/web/build.php
+      - ./think:/web/think
+      - ./nginx/:/etc/nginx/
+  mysql:
+    hostname: mysql
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/mysql:8.0
+    ports:
+    - 3308:3306
+    networks:
+    - pmc-network
+    volumes:
+    - ./mysql/conf/:/etc/mysql/
+    - mysql-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: cgland2019
+  redis:
+    ports:
+      - 6666:6379
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/redis:3.2
+    networks:
+      - pmc-network
+    command: redis-server --requirepass cgland2019 --notify-keyspace-events Eglx
+  phpmyadmin:
+    ports:
+    - 3333:80
+    image: registry.cn-shenzhen.aliyuncs.com/lnmpdev/phpmyadmin:latest
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: cgland2019
+    networks:
+    - pmc-network
+volumes:
+  mysql-db:
+    driver: local
+networks:
+  pmc-network:
